@@ -41,11 +41,11 @@ void handle_phase2(){
   }
   else{
     webServer.send(200, "text/html", String(safe_phase2_prompt_part1HTML)
-                                     + (conn[0]?"green":"red")
+                                     + (conn[2]?"green":"red")
                                      + safe_phase2_prompt_part2HTML
                                      + (conn[1]?"green":"red")
                                      + safe_phase2_prompt_part3HTML
-                                     + (conn[2]?"green":"red")
+                                     + (conn[0]?"green":"red")
                                      + safe_phase2_prompt_part4HTML
                                      + (conn[3]?"green":"red")
                                      + safe_phase2_prompt_part5HTML
@@ -79,8 +79,7 @@ void phase2_setup(){
     pinMode(port, INPUT_PULLUP);
   }
   //these pins have external pull-downs
-  pinMode(D3, INPUT);
-  pinMode(D4, INPUT);
+  pinMode(D8, INPUT);
 }
 
 void phase2_loop(){
@@ -91,11 +90,45 @@ void phase2_loop(){
       }
       else if(!(digitalRead(port) ^ current_state)){ //pins match
         if(ports[current_port] == matching_ports[port].first){
-          conn[matching_ports[port].second] = true;
+          if(port == D8){ //have pull-downs
+            if(current_state){
+              if(!conn[matching_ports[port].second]){
+                Serial.println(String("conn[")+matching_ports[port].second+"]=true 1");
+              }
+              conn[matching_ports[port].second] = true;
+            }
+          }
+          else{ //have pull-ups
+            if( !current_state){
+              if(!conn[matching_ports[port].second]){
+                Serial.println(String("conn[")+matching_ports[port].second+"]=true 2");
+              }
+              conn[matching_ports[port].second] = true;
+            }
+          }
+        }
+        else if(port == D8){ //have pull-downs
+          if( current_state ){
+            if(conn[matching_ports[ports[current_port]].second]){
+              Serial.println(String("conn[")+matching_ports[ports[current_port]].second+"]=false 1");
+            }
+            conn[matching_ports[ports[current_port]].second] = false;
+          }
+        }
+        else{ //have pull-ups
+          if( !current_state){
+            if(conn[matching_ports[port].second]){
+              Serial.println(String("conn[")+matching_ports[port].second+"]=false 2");
+            }
+            conn[matching_ports[port].second] = false;
+          }
         }
       }
       else{ //pins mismatch
         if(ports[current_port] == matching_ports[port].first){
+          if(conn[matching_ports[port].second]){
+            Serial.println(String("conn[")+matching_ports[port].second+"]=false 3");
+          }
           conn[matching_ports[port].second] = false;
         }
       }
@@ -103,9 +136,10 @@ void phase2_loop(){
     if(!current_state){
       digitalWrite(ports[current_port], HIGH);
       current_state = true;
+      //Serial.println(String("port") + current_port + " High");
     }
     else{
-      if(ports[current_port] != D3 && ports[current_port] != D4){
+      if(ports[current_port] != D8){
         pinMode(ports[current_port], INPUT_PULLUP);
       }
       else{
@@ -115,10 +149,11 @@ void phase2_loop(){
       current_state = false;
       pinMode(ports[current_port], OUTPUT);
       digitalWrite(ports[current_port], LOW);
+      //Serial.println(String("port") + current_port + " Low");
     }
     all_connections_made = conn[0] && conn[1] && conn[2] && conn[3];
-    Serial.println(String("all_conn:") + all_connections_made);
-    next_check = millis()+1;
+    //Serial.println(String("all_conn:") + all_connections_made);
+    next_check = millis()+10;
   }
 }
 
