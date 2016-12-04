@@ -38,7 +38,7 @@ const char* message = "I LOVE PUZZLES";
 
 const char phase1_passHTML[] PROGMEM = ""
   "<!DOCTYPE html><html><head><title>ESP8266 Puzzle</title></head><body>"
-  "<h1>Congrats!</h1><p>I hope you do love puzzles!  ;-)</p>"
+  "<h1>Congrats!</h1><p>You have passed phase 1.</p><p>I hope you do love puzzles!  ;-)</p>"
   "<p>You may <a href=\"/phase2\">continue</a></p></body></html>";
 
 const char phase1_prompt_headHTML[] PROGMEM = ""
@@ -46,7 +46,7 @@ const char phase1_prompt_headHTML[] PROGMEM = ""
 auto safe_phase1_prompt_headHTML = reinterpret_cast<const __FlashStringHelper *>(phase1_prompt_headHTML);
 
 const char phase1_prompt_tailHTML[] PROGMEM = ""
-  "<h1>Hi There!</h1><p>I thought it would be kind of boring to just give you an unprogrammed board, so I've embedded a little game.</p>"
+  "<h1>Hi There! (Phase 1)</h1><p>I thought it would be kind of boring to just give you an unprogrammed board, so I've embedded a little game.</p>"
   "<p>There's no reward at the end (aside from personal satisfaction), but to continue you need to enter the password.</p>"
   "<p>Need a <a href='/phase1_hint'>hint</a>?</p>"
   "<form method='GET' action='phase1'>"

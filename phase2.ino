@@ -1,10 +1,11 @@
 const char phase2_passHTML[] PROGMEM = ""
   "<!DOCTYPE html><html><head><title>ESP8266 Puzzle</title></head><body>"
-  "<h1>Congrats!</h1><p>I think you </p>"
+  "<h1>Congrats!</h1><p>You have passed phase 2.</p>"
   "<p>You may <a href=\"/phase3\">continue</a></p></body></html>";
 
 const char phase2_prompt_part1HTML[] PROGMEM = ""
   "<!DOCTYPE html><html><head><title>ESP8266 Puzzle</title></head><body>"
+  "<h1>Phase 2</h1>"
   "<p><font color='";
 const char phase2_prompt_part2HTML[] PROGMEM = ""
   "'>25</font></p>"
@@ -34,10 +35,16 @@ const char phase2_hintHTML[] PROGMEM = ""
   
 bool all_connections_made = false;
 bool conn[4] = {false, false, false, false};
+std::array<int,9> ports{ {D0, D1, D2, D3, D4, D5, D6, D7, D8} };
 
 void handle_phase2(){
   if(all_connections_made){
     webServer.send_P(200, "text/html", phase2_passHTML);
+    for(int port: ports){
+      pinMode(port, INPUT);
+    }
+    phase = 3;
+    phase3_setup();
   }
   else{
     webServer.send(200, "text/html", String(safe_phase2_prompt_part1HTML)
@@ -57,7 +64,6 @@ void handle_phase2_hint(){
   webServer.send_P(200, "text/html", phase2_hintHTML);
 }
 
-std::array<int,9> ports{ {D0, D1, D2, D3, D4, D5, D6, D7, D8} };
 std::array<std::pair<int,int>,17> matching_ports;
 int current_port = 0;
 bool current_state = false;
@@ -93,7 +99,7 @@ void phase2_loop(){
           if(port == D8 ){ //have pull-downs
             if(current_state){
               if(!conn[matching_ports[port].second]){
-                Serial.println(String("conn[")+matching_ports[port].second+"]=true 1 port="+current_port);
+                //Serial.println(String("conn[")+matching_ports[port].second+"]=true 1 port="+current_port);
               }
               conn[matching_ports[port].second] = true;
             }
@@ -101,7 +107,7 @@ void phase2_loop(){
           else{ //have pull-ups
             if( !current_state){
               if(!conn[matching_ports[port].second]){
-                Serial.println(String("conn[")+matching_ports[port].second+"]=true 2 port="+current_port);
+                //Serial.println(String("conn[")+matching_ports[port].second+"]=true 2 port="+current_port);
               }
               conn[matching_ports[port].second] = true;
             }
@@ -113,7 +119,7 @@ void phase2_loop(){
         else if(port == D8){ //have pull-downs
           if( current_state ){
             if(conn[matching_ports[ports[current_port]].second]){
-              Serial.println(String("conn[")+matching_ports[ports[current_port]].second+"]=false 1 port="+current_port);
+              //Serial.println(String("conn[")+matching_ports[ports[current_port]].second+"]=false 1 port="+current_port);
             }
             conn[matching_ports[ports[current_port]].second] = false;
           }
@@ -121,7 +127,7 @@ void phase2_loop(){
         else{ //have pull-ups
           if( !current_state){
             if(conn[matching_ports[port].second]){
-              Serial.println(String("conn[")+matching_ports[port].second+"]=false 2 port="+current_port);
+              //Serial.println(String("conn[")+matching_ports[port].second+"]=false 2 port="+current_port);
             }
             conn[matching_ports[port].second] = false;
           }
@@ -131,7 +137,7 @@ void phase2_loop(){
         if(ports[current_port] == matching_ports[port].first){
           if(ports[current_port] != D7 || current_state){ //FIXME: for some reason D7 won't pull down D0...don't know why
             if(conn[matching_ports[port].second]){
-              Serial.println(String("conn[")+matching_ports[port].second+"]=false 3 port="+current_port+" state="+current_state);
+              //Serial.println(String("conn[")+matching_ports[port].second+"]=false 3 port="+current_port+" state="+current_state);
             }
             conn[matching_ports[port].second] = false;
           }
