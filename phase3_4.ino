@@ -44,7 +44,8 @@ bool phase4_pw_entered = false;
 void handle_phase4(){
   if(phase4_pw_entered){
     webServer.send_P(200, "text/html", phase4_passHTML);
-    //FIXME: prep phase 5
+    phase = 5;
+    phase5_setup();
   }
   else{
     if(phase == 3){

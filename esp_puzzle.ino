@@ -48,5 +48,8 @@ void loop() {
     case 4:
       phase4_loop();
       break;
+    case 5:
+      phase5_loop();
+      break;
   }
 }
