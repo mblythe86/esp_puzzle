@@ -43,6 +43,7 @@ const char phase1_passHTML[] PROGMEM = ""
 
 const char phase1_prompt_headHTML[] PROGMEM = ""
   "<!DOCTYPE html><html><head><title>ESP8266 Puzzle</title></head><body>";
+auto safe_phase1_prompt_headHTML = reinterpret_cast<const __FlashStringHelper *>(phase1_prompt_headHTML);
 
 const char phase1_prompt_tailHTML[] PROGMEM = ""
   "<h1>Hi There!</h1><p>I thought it would be kind of boring to just give you an unprogrammed board, so I've embedded a little game.</p>"
@@ -52,6 +53,7 @@ const char phase1_prompt_tailHTML[] PROGMEM = ""
     "<input type='text' placeholder='password' name='password'/>"
     "<br /><input type='submit' value='Go!'/></form>"
   "</body></html>";
+auto safe_phase1_prompt_tailHTML = reinterpret_cast<const __FlashStringHelper *>(phase1_prompt_tailHTML);
 
 const char phase1_hintHTML[] PROGMEM = ""
   "<!DOCTYPE html><html><head><title>ESP8266 Puzzle</title></head><body>"
@@ -66,13 +68,16 @@ void handle_phase1(){
     password.toUpperCase();
     if(password == message){
       webServer.send_P(200, "text/html", phase1_passHTML);
+      digitalWrite(BUILTIN_LED, HIGH);  // Turn the LED off by making the voltage HIGH
+      phase = 2;
+      phase2_setup();
     }
     else{
-      webServer.send(200, "text/html", String(reinterpret_cast<const __FlashStringHelper *>(phase1_prompt_headHTML)) + "<p>Bad password</p>" + reinterpret_cast<const __FlashStringHelper *>(phase1_prompt_tailHTML));
+      webServer.send(200, "text/html", String(safe_phase1_prompt_headHTML) + "<p>Bad password</p>" + safe_phase1_prompt_tailHTML);
     }
   }
   else{
-    webServer.send(200, "text/html", String(reinterpret_cast<const __FlashStringHelper *>(phase1_prompt_headHTML)) + reinterpret_cast<const __FlashStringHelper *>(phase1_prompt_tailHTML));
+    webServer.send(200, "text/html", String(safe_phase1_prompt_headHTML) + safe_phase1_prompt_tailHTML);
   }
 }
 
@@ -90,8 +95,8 @@ void phase1_setup(){
 }
 
 void phase1_loop(){
-  if((long)(millis() - next_transition) > 0){
-    Serial.println(String("morsestate: ") + letter + "  " + letter_pos + "  " + millis() + "   " + next_transition);
+  if((long)(millis() - next_transition) >= 0){
+    //Serial.println(String("morsestate: ") + letter + "  " + letter_pos + "  " + millis() + "   " + next_transition);
     next_transition = millis() + dit_len;
     letter_pos++;
     int letter_idx = (message[letter] == ' ') ? 26 : (message[letter] - 'A');

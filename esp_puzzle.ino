@@ -7,6 +7,8 @@ IPAddress apIP(192, 168, 1, 1);
 DNSServer dnsServer;
 ESP8266WebServer webServer(80);
 
+int phase = 1;
+
 const char responseHTML[] PROGMEM = ""
   "<!DOCTYPE html><html><head><title>ESP8266 Puzzle</title></head><body>"
   "<h1>Oops!</h1><p>You seem to have reached an invalid page!</p></body></html>";
@@ -33,5 +35,12 @@ void setup() {
 void loop() {
   dnsServer.processNextRequest();
   webServer.handleClient();
-  phase1_loop();
+  switch (phase){
+    case 1:
+      phase1_loop();
+      break;
+    case 2:
+      phase2_loop();
+      break;
+  }
 }
