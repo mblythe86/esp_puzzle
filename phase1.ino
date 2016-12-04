@@ -1,7 +1,3 @@
-#include <stdint.h>
-#include <initializer_list>
-#include <Arduino.h>
-
 static const int dit_len = 200; //1/5 second?
 
 int letter = 0;
