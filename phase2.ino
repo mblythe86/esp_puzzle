@@ -90,10 +90,10 @@ void phase2_loop(){
       }
       else if(!(digitalRead(port) ^ current_state)){ //pins match
         if(ports[current_port] == matching_ports[port].first){
-          if(port == D8){ //have pull-downs
+          if(port == D8 ){ //have pull-downs
             if(current_state){
               if(!conn[matching_ports[port].second]){
-                Serial.println(String("conn[")+matching_ports[port].second+"]=true 1");
+                Serial.println(String("conn[")+matching_ports[port].second+"]=true 1 port="+current_port);
               }
               conn[matching_ports[port].second] = true;
             }
@@ -101,16 +101,19 @@ void phase2_loop(){
           else{ //have pull-ups
             if( !current_state){
               if(!conn[matching_ports[port].second]){
-                Serial.println(String("conn[")+matching_ports[port].second+"]=true 2");
+                Serial.println(String("conn[")+matching_ports[port].second+"]=true 2 port="+current_port);
               }
               conn[matching_ports[port].second] = true;
             }
           }
         }
+        else if(port == D1){
+          //ignore because it doesn't have a pull-down, but mgiht be connected to a pull-down.
+        }
         else if(port == D8){ //have pull-downs
           if( current_state ){
             if(conn[matching_ports[ports[current_port]].second]){
-              Serial.println(String("conn[")+matching_ports[ports[current_port]].second+"]=false 1");
+              Serial.println(String("conn[")+matching_ports[ports[current_port]].second+"]=false 1 port="+current_port);
             }
             conn[matching_ports[ports[current_port]].second] = false;
           }
@@ -118,7 +121,7 @@ void phase2_loop(){
         else{ //have pull-ups
           if( !current_state){
             if(conn[matching_ports[port].second]){
-              Serial.println(String("conn[")+matching_ports[port].second+"]=false 2");
+              Serial.println(String("conn[")+matching_ports[port].second+"]=false 2 port="+current_port);
             }
             conn[matching_ports[port].second] = false;
           }
@@ -126,10 +129,12 @@ void phase2_loop(){
       }
       else{ //pins mismatch
         if(ports[current_port] == matching_ports[port].first){
-          if(conn[matching_ports[port].second]){
-            Serial.println(String("conn[")+matching_ports[port].second+"]=false 3");
+          if(ports[current_port] != D7 || current_state){ //FIXME: for some reason D7 won't pull down D0...don't know why
+            if(conn[matching_ports[port].second]){
+              Serial.println(String("conn[")+matching_ports[port].second+"]=false 3 port="+current_port+" state="+current_state);
+            }
+            conn[matching_ports[port].second] = false;
           }
-          conn[matching_ports[port].second] = false;
         }
       }
     }
