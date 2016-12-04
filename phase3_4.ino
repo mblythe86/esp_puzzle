@@ -80,6 +80,7 @@ void phase4_loop(){
   if(Serial.available()){
     String input = Serial.readString();
     if(input == "ThisIsFun!"){
+      phase4_pw_entered = true;
       Serial.println("Correct password.");
     }
     else{
