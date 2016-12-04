@@ -1,7 +1,7 @@
 const char phase5_passHTML[] PROGMEM = ""
   "<!DOCTYPE html><html><head><title>ESP8266 Puzzle</title></head><body>"
   "<h1>Congrats!</h1><p>You have passed phase 5.</p>"
-  "<p>You may <a href=\"/phase5\">continue</a></p></body></html>";
+  "<p>You may <a href=\"/phase6\">continue</a></p></body></html>";
 
 const char phase5_promptHTML[] PROGMEM = ""
   "<!DOCTYPE html><html><head><title>ESP8266 Puzzle</title></head><body>"
@@ -36,22 +36,24 @@ void handle_phase5_hint(){
   webServer.send_P(200, "text/html", phase5_hintHTML);
 }
 
-WiFiServer *phase5_server;
-WiFiClient *server_client;
+WiFiServer real_phase5_server(8266);
+WiFiServer *phase5_server = &real_phase5_server;
+WiFiClient real_server_client;
+WiFiClient *server_client = &real_server_client;
 
 void phase5_setup(){
   webServer.on("/phase5", handle_phase5);
   webServer.on("/phase5_hint", handle_phase5_hint);
-  phase5_server = new WiFiServer(8266);
+  //phase5_server = new WiFiServer(8266);
   phase5_server->begin();
-  server_client = new WiFiClient();
+  //server_client = new WiFiClient();
 }
 
 void phase5_teardown(){
   server_client->stop();
-  delete server_client;
+  //delete server_client;
   phase5_server->stop();
-  delete phase5_server;
+  //delete phase5_server;
 }
 
 void phase5_loop(){
