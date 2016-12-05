@@ -17,6 +17,7 @@ const char phase5_hintHTML[] PROGMEM = ""
   "<p><b>T</b>his <b>C</b>hallenging <b>P</b>uzzle can be solved, I assure you!</p>"
   "<p>You may need a real computer, and may <b>N</b>eed <b>M</b>ore <b>A</b>dvanced <b>P</b>rograms to find your goal.</p>"
   "<p>Once the goal is found, there are other <b>N</b>i<b>C</b>e programs that are helpful.</p>"
+  "<p>Additional hint (select to reveal):<font color='white'>By default, nmap only scans the most used ports.  You may have to use the -p option to scan additional ports</font></p>"
   "<p><a href=\"/phase5\">Back?</a></p></body></html>";
 
 bool phase5_pw_entered = false;
