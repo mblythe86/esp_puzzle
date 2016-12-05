@@ -26,7 +26,8 @@ void handle_phase5(){
   if(phase5_pw_entered){
     webServer.send_P(200, "text/html", phase5_passHTML);
     phase5_teardown();
-    //FIXME: prep phase 6
+    phase = 6;
+    phase6_setup();
   }
   else{
     webServer.send_P(200, "text/html", phase5_promptHTML);

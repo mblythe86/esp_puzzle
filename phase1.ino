@@ -48,6 +48,7 @@ auto safe_phase1_prompt_headHTML = reinterpret_cast<const __FlashStringHelper *>
 const char phase1_prompt_tailHTML[] PROGMEM = ""
   "<h1>Hi There! (Phase 1)</h1><p>I thought it would be kind of boring to just give you an unprogrammed board, so I've embedded a little game.</p>"
   "<p>There's no reward at the end (aside from personal satisfaction), but to continue you need to enter the password.</p>"
+  "<p>If you're ever hopelessly stuck, let me know, and I'll nudge you in the right direction.</p>"
   "<p>Need a <a href='/phase1_hint'>hint</a>?</p>"
   "<form method='GET' action='phase1'>"
     "<input type='text' placeholder='password' name='password'/>"
